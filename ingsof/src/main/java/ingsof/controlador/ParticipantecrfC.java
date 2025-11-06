@@ -1,15 +1,14 @@
 package ingsof.controlador;
 
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Optional;
-
 import ingsof.entidad.Participantecrf;
 import ingsof.servicio.ParticipantecrfS;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/participante")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/participantecrf")
 public class ParticipantecrfC {
 
     private final ParticipantecrfS servicio;
@@ -18,28 +17,36 @@ public class ParticipantecrfC {
         this.servicio = servicio;
     }
 
+    // GET: lista todos
     @GetMapping
-    public List<Participantecrf> listar() {
-        return this.servicio.listar();
+    public ResponseEntity<List<Participantecrf>> listar() {
+        return ResponseEntity.ok(servicio.listar());
     }
 
+    // GET: obtiene uno por cod_part
     @GetMapping("/{codPart}")
-    public Optional<Participantecrf> obtener(@PathVariable String codPart) {
-        return this.servicio.obtenerPorCodigo(codPart);
+    public ResponseEntity<Participantecrf> porCodigo(@PathVariable String codPart) {
+        return ResponseEntity.of(servicio.buscar(codPart));
     }
 
+    // POST: crea (genera cod_part y fecha si faltan)
     @PostMapping
-    public Participantecrf guardar(@RequestBody Participantecrf participante) {
-        return this.servicio.guardar(participante);
+    public ResponseEntity<Participantecrf> crear(@RequestBody Participantecrf body) {
+        return ResponseEntity.ok(servicio.crear(body));
     }
 
+    // PUT: actualiza. Si cambia grupo, cambia también el cod_part.
     @PutMapping("/{codPart}")
-    public void actualizarPorId(@PathVariable String codPart, @RequestBody Participantecrf participante) {
-        this.servicio.actualizarPorId(codPart, participante);
+    public ResponseEntity<Participantecrf> actualizar(@PathVariable String codPart,
+                                                      @RequestBody Participantecrf body) {
+        return ResponseEntity.ok(servicio.actualizar(codPart, body));
     }
 
+    // DELETE: elimina padre e hijas por cascada
     @DeleteMapping("/{codPart}")
-    public void eliminar(@PathVariable  String codPart) {
-        this.servicio.eliminar(codPart);
+    public ResponseEntity<Void> eliminar(@PathVariable String codPart) {
+        servicio.eliminar(codPart);
+        return ResponseEntity.noContent().build();
     }
 }
+
