@@ -2,10 +2,10 @@ package ingsof.controlador;
 
 import ingsof.entidad.Histopatologia;
 import ingsof.servicio.HistopatologiaS;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/histopatologia")
@@ -18,27 +18,33 @@ public class HistopatologiaC {
     }
 
     @GetMapping
-    public List<Histopatologia> listar() {
-        return this.servicio.listar();
+    public ResponseEntity<List<Histopatologia>> listar() {
+        return ResponseEntity.ok(servicio.listar());
     }
 
     @GetMapping("/{id}")
-    public Optional<Histopatologia> obtener(@PathVariable int id) {
-        return this.servicio.obtener(id);
+    public ResponseEntity<Histopatologia> porId(@PathVariable Integer id) {
+        return ResponseEntity.ok(servicio.porId(id));
+    }
+
+    @GetMapping("/por-participante/{codPart}")
+    public ResponseEntity<Histopatologia> porCodPart(@PathVariable String codPart) {
+        return ResponseEntity.ok(servicio.porCodPart(codPart));
     }
 
     @PostMapping
-    public void guardar(@RequestBody Histopatologia histopatologia) {
-        this.servicio.guardar(histopatologia);
-    }
-
-    @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable int id) {
-        this.servicio.eliminar(id);
+    public ResponseEntity<Histopatologia> crear(@RequestBody Histopatologia body) {
+        return ResponseEntity.ok(servicio.crear(body));
     }
 
     @PutMapping("/{id}")
-    public void actualizar(@PathVariable int id, @RequestBody Histopatologia histopatologia) {
-        this.servicio.actualizar(id, histopatologia);
+    public ResponseEntity<Histopatologia> actualizar(@PathVariable Integer id, @RequestBody Histopatologia body) {
+        return ResponseEntity.ok(servicio.actualizar(id, body));
+    }
+
+    @PutMapping("/sync/{codPart}")
+    public ResponseEntity<Void> borrarControl(@PathVariable String codPart) {
+        servicio.borrarControl(codPart);
+        return ResponseEntity.noContent().build();
     }
 }
