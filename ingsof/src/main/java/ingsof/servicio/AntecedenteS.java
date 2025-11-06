@@ -1,54 +1,77 @@
 package ingsof.servicio;
 
 import ingsof.entidad.Antecedente;
+import ingsof.entidad.Participantecrf;
 import ingsof.repositorio.AntecedenteR;
-import org.springframework.beans.factory.annotation.Autowired;
+import ingsof.repositorio.ParticipantecrfR;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AntecedenteS {
 
     private final AntecedenteR repo;
+    private final ParticipantecrfR partRepo;
 
-    @Autowired
-    public AntecedenteS(AntecedenteR repo) {
+    public AntecedenteS(AntecedenteR repo, ParticipantecrfR partRepo) {
         this.repo = repo;
+        this.partRepo = partRepo;
     }
 
-    // Obtener todos los antecedentes
+    @Transactional(readOnly = true)
     public List<Antecedente> listar() {
         return repo.findAll();
     }
 
-    // Buscar un antecedente por ID
-    public Optional<Antecedente> obtenerPorId(int id) {
-        return repo.findById(id);
+    @Transactional(readOnly = true)
+    public Antecedente porId(Integer id) {
+        return repo.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe antecedente"));
     }
 
-    // Crear o actualizar antecedente
-    public Antecedente guardar(Antecedente antecedente) {
-        return repo.save(antecedente);
+    @Transactional(readOnly = true)
+    public Antecedente porCodPart(String codPart) {
+        return repo.findByCodPart(codPart).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe para ese participante"));
     }
 
-    // Eliminar antecedente por ID
-    public void eliminar(int id) {
-        repo.deleteById(id);
+    @Transactional
+    public Antecedente crear(Antecedente a) {
+        Participantecrf p = partRepo.findById(a.getCodPart())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participante no encontrado"));
+        if (!"Caso".equalsIgnoreCase(p.getGrupo()) && "Sí".equalsIgnoreCase(a.getDiagnostico()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solo los casos pueden tener diagnóstico histológico.");
+        if (!"Caso".equalsIgnoreCase(p.getGrupo()) && a.getFechaDiag() != null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solo los casos pueden tener fecha de diagnóstico.");
+        return repo.save(a);
     }
 
-    // Actualizar antecedente existente
-    public void actualizar(int id, Antecedente antecedenteActualizado) {
-        Optional<Antecedente> antecedenteExistente = repo.findById(id);
-        if (antecedenteExistente.isPresent()) {
-            antecedenteExistente.get().setDiagnostico(antecedenteActualizado.getDiagnostico());
-            antecedenteExistente.get().setFechaDiag(antecedenteActualizado.getFechaDiag());
-            antecedenteExistente.get().setFamCg(antecedenteActualizado.getFamCg());
-            antecedenteExistente.get().setFamOtro(antecedenteActualizado.getFamOtro());
-            antecedenteExistente.get().setMedicamentos(antecedenteActualizado.getMedicamentos());
-            antecedenteExistente.get().setOtroCancer(antecedenteActualizado.getOtroCancer());
-            antecedenteExistente.get().setCirugia(antecedenteActualizado.getCirugia());
-            repo.save(antecedenteExistente.get());
-        }
+    @Transactional
+    public Antecedente actualizar(Integer id, Antecedente cambios) {
+        Antecedente db = porId(id);
+        String destino = cambios.getCodPart() != null ? cambios.getCodPart() : db.getCodPart();
+        Participantecrf p = partRepo.findById(destino)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participante no encontrado"));
+        String diag = cambios.getDiagnostico() != null ? cambios.getDiagnostico() : db.getDiagnostico();
+        var fecha = cambios.getFechaDiag() != null ? cambios.getFechaDiag() : db.getFechaDiag();
+        if (!"Caso".equalsIgnoreCase(p.getGrupo()) && "Sí".equalsIgnoreCase(diag))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solo los casos pueden tener diagnóstico histológico.");
+        if (!"Caso".equalsIgnoreCase(p.getGrupo()) && fecha != null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Solo los casos pueden tener fecha de diagnóstico.");
+
+        if (cambios.getDiagnostico() != null) db.setDiagnostico(cambios.getDiagnostico());
+        if (cambios.getFechaDiag() != null) db.setFechaDiag(cambios.getFechaDiag());
+        if (cambios.getFamCg() != null) db.setFamCg(cambios.getFamCg());
+        if (cambios.getFamOtro() != null) db.setFamOtro(cambios.getFamOtro());
+        if (cambios.getOtroCancer() != null) db.setOtroCancer(cambios.getOtroCancer());
+        if (cambios.getOtrasEnfermedades() != null) db.setOtrasEnfermedades(cambios.getOtrasEnfermedades());
+        if (cambios.getMedicamentos() != null) db.setMedicamentos(cambios.getMedicamentos());
+        if (cambios.getCirugia() != null) db.setCirugia(cambios.getCirugia());
+        if (cambios.getCodPart() != null) db.setCodPart(cambios.getCodPart());
+        return repo.save(db);
     }
 }

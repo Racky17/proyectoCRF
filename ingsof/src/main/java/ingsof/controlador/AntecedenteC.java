@@ -2,43 +2,43 @@ package ingsof.controlador;
 
 import ingsof.entidad.Antecedente;
 import ingsof.servicio.AntecedenteS;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/antecedente")
 public class AntecedenteC {
+
     private final AntecedenteS servicio;
+
     public AntecedenteC(AntecedenteS servicio) {
         this.servicio = servicio;
     }
 
     @GetMapping
-    public List<Antecedente> listar() {
-        return this.servicio.listar();
+    public ResponseEntity<List<Antecedente>> listar() {
+        return ResponseEntity.ok(servicio.listar());
     }
 
     @GetMapping("/{id}")
-    public Optional<Antecedente> obtener(@PathVariable int id) {
-        return this.servicio.obtenerPorId(id);
+    public ResponseEntity<Antecedente> porId(@PathVariable Integer id) {
+        return ResponseEntity.ok(servicio.porId(id));
+    }
+
+    @GetMapping("/por-participante/{codPart}")
+    public ResponseEntity<Antecedente> porCodPart(@PathVariable String codPart) {
+        return ResponseEntity.ok(servicio.porCodPart(codPart));
     }
 
     @PostMapping
-    public void guardar(@RequestBody Antecedente antecedente) {
-        this.servicio.guardar(antecedente);
-    }
-
-    @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable int id) {
-        this.servicio.eliminar(id);
+    public ResponseEntity<Antecedente> crear(@RequestBody Antecedente body) {
+        return ResponseEntity.ok(servicio.crear(body));
     }
 
     @PutMapping("/{id}")
-    public void actualizar(@PathVariable int id, @RequestBody Antecedente antecedente) {
-        this.servicio.actualizar(id, antecedente);
+    public ResponseEntity<Antecedente> actualizar(@PathVariable Integer id, @RequestBody Antecedente body) {
+        return ResponseEntity.ok(servicio.actualizar(id, body));
     }
-
-
 }
