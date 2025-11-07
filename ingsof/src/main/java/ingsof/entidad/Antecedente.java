@@ -36,7 +36,7 @@ public class Antecedente {
     private String codPart;
 
 
-    @OneToOne (fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
@@ -91,4 +91,43 @@ public class Antecedente {
         this.otroCancer = otroCancer;
     }
 
+    public String getCodPart() {
+        return codPart;
+    }
+
+    public void setCodPart(String codPart) {
+        this.codPart = codPart;
+    }
+
+    public String getOtrasEnfermedades() {
+        return otrasEnfermedades;
+    }
+
+    public void setOtrasEnfermedades(String otrasEnfermedades) {
+        this.otrasEnfermedades = otrasEnfermedades;
+    }
+
+    public String getMedicamentos() {
+        return medicamentos;
+    }
+
+    public void setMedicamentos(String medicamentos) {
+        this.medicamentos = medicamentos;
+    }
+
+    public String getCirugia() {
+        return cirugia;
+    }
+
+    public void setCirugia(String cirugia) {
+        this.cirugia = cirugia;
+    }
+
+    public Participantecrf getParticipante() {
+        return participante;
+    }
+
+    public void setParticipante(Participantecrf participante) {
+        this.participante = participante;
+    }
 }

@@ -38,7 +38,7 @@ public class Factor {
     private String codPart;
 
     // Relación con participante
-    @OneToOne (fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 

@@ -19,7 +19,7 @@ public class Helicobacter {
     private String codPart;
 
     // Relación 1:1 con Participante
-    @OneToOne (fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "cod_part", referencedColumnName = "cod_part", insertable = false, updatable = false)
     private Participantecrf participante;
 
