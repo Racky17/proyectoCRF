@@ -53,8 +53,7 @@ public class Antropometria {
     public String getCodPart() {
         return codPart;
     }
-    public void setCodPart(String codPart) { t
-    his.codPart = codPart;
+    public void setCodPart(String codPart) { this.codPart = codPart;
     }
     public Participantecrf getParticipante() {
         return participante;
