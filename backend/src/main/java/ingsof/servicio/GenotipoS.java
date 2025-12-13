@@ -15,6 +15,9 @@ public class GenotipoS {
 
     private final GenotipoR repo;
 
+    private static final List<String> VALORES_PERMITIDOS =
+        Arrays.asList("TT", "TC", "CC", "GG", "GC", "GT");
+
     @Autowired
     public GenotipoS(GenotipoR repo) {
         this.repo = repo;
