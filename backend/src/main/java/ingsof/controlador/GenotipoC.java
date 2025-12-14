@@ -17,7 +17,7 @@ public class GenotipoC {
     public GenotipoC(GenotipoS servicio) {
         this.servicio = servicio;
     }
-
+git
     @GetMapping
     public List<Genotipo> listar() {
         return this.servicio.listar();
