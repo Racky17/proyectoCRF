@@ -5,10 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import ingsof.entidad.Usuario;
 import ingsof.servicio.UsuarioS;
-
+@CrossOrigin(origins = "http://localhost:3002")
 @RestController
 @RequestMapping("/api/usuario")
-@CrossOrigin(origins = "*") // Permite llamadas desde Postman o un frontend
 public class UsuarioC {
 
     @Autowired

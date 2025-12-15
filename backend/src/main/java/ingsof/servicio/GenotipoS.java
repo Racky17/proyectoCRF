@@ -15,14 +15,17 @@ public class GenotipoS {
 
     private final GenotipoR repo;
 
+<<<<<<< HEAD
     private static final List<String> VALORES_PERMITIDOS =
+=======
+        private static final List<String> VALORES_PERMITIDOS =
+>>>>>>> igna
         Arrays.asList("TT", "TC", "CC", "GG", "GC", "GT");
 
     @Autowired
     public GenotipoS(GenotipoR repo) {
         this.repo = repo;
     }
-
 
     public Optional<Genotipo> obtenerPorId(int id) {
         return repo.findById(id);
@@ -31,57 +34,64 @@ public class GenotipoS {
     public List<Genotipo> listar() {
         return repo.findAll();
     }
-    
+
     public Genotipo guardar(Genotipo genotipo) {
         validarCamposGenotipo(genotipo);
-        
-        // Si la fecha de toma no está establecida, usar la fecha actual
+
         if (genotipo.getFechaToma() == null) {
             genotipo.setFechaToma(LocalDate.now());
         }
-        
+
         return repo.save(genotipo);
     }
-    
+
     public void eliminar(int id) {
         repo.deleteById(id);
     }
 
+    /**
+     * Actualiza un genotipo existente.
+     * No usa Optional.map() para evitar warnings de null-safety.
+     */
     public Genotipo actualizar(int id, Genotipo genotipoActualizado) {
-        return repo.findById(id).map(genotipo -> {
-            // Actualizar solo los campos que se permiten modificar
-            if (genotipoActualizado.getTlr9Rs5743836() != null) {
-                genotipo.setTlr9Rs5743836(genotipoActualizado.getTlr9Rs5743836());
-            }
-            if (genotipoActualizado.getTlr9Rs187084() != null) {
-                genotipo.setTlr9Rs187084(genotipoActualizado.getTlr9Rs187084());
-            }
-            if (genotipoActualizado.getMir146aRs2910164() != null) {
-                genotipo.setMir146aRs2910164(genotipoActualizado.getMir146aRs2910164());
-            }
-            if (genotipoActualizado.getMir196a2Rs11614913() != null) {
-                genotipo.setMir196a2Rs11614913(genotipoActualizado.getMir196a2Rs11614913());
-            }
-            if (genotipoActualizado.getMthfrRs1801133() != null) {
-                genotipo.setMthfrRs1801133(genotipoActualizado.getMthfrRs1801133());
-            }
-            if (genotipoActualizado.getDnmt3bRs1569686() != null) {
-                genotipo.setDnmt3bRs1569686(genotipoActualizado.getDnmt3bRs1569686());
-            }
 
-            // Validar los campos actualizados
-            validarCamposGenotipo(genotipo);
+        Genotipo genotipo = repo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Genotipo no encontrado con id: " + id)
+                );
 
-            return repo.save(genotipo);
-        }).orElseThrow(() -> new RuntimeException("Genotipo no encontrado con id: " + id));
+        if (genotipoActualizado.getTlr9Rs5743836() != null) {
+            genotipo.setTlr9Rs5743836(genotipoActualizado.getTlr9Rs5743836());
+        }
+        if (genotipoActualizado.getTlr9Rs187084() != null) {
+            genotipo.setTlr9Rs187084(genotipoActualizado.getTlr9Rs187084());
+        }
+        if (genotipoActualizado.getMir146aRs2910164() != null) {
+            genotipo.setMir146aRs2910164(genotipoActualizado.getMir146aRs2910164());
+        }
+        if (genotipoActualizado.getMir196a2Rs11614913() != null) {
+            genotipo.setMir196a2Rs11614913(genotipoActualizado.getMir196a2Rs11614913());
+        }
+        if (genotipoActualizado.getMthfrRs1801133() != null) {
+            genotipo.setMthfrRs1801133(genotipoActualizado.getMthfrRs1801133());
+        }
+        if (genotipoActualizado.getDnmt3bRs1569686() != null) {
+            genotipo.setDnmt3bRs1569686(genotipoActualizado.getDnmt3bRs1569686());
+        }
+
+        // Validar después de aplicar los cambios
+        validarCamposGenotipo(genotipo);
+
+        return repo.save(genotipo);
     }
+
+    // ================= VALIDACIONES =================
 
     private void validarCamposGenotipo(Genotipo genotipo) {
         if (genotipo == null) {
             throw new IllegalArgumentException("El objeto Genotipo no puede ser nulo");
         }
 
-        // Validar cada campo genotípico
         validarCampo(genotipo.getTlr9Rs5743836(), "tlr9Rs5743836");
         validarCampo(genotipo.getTlr9Rs187084(), "tlr9Rs187084");
         validarCampo(genotipo.getMir146aRs2910164(), "mir146aRs2910164");
@@ -89,21 +99,21 @@ public class GenotipoS {
         validarCampo(genotipo.getMthfrRs1801133(), "mthfrRs1801133");
         validarCampo(genotipo.getDnmt3bRs1569686(), "dnmt3bRs1569686");
     }
-    
+
     private void validarCampo(String valor, String nombreCampo) {
-        // Si el valor es nulo o vacío, no es necesario validar (asumiendo que es opcional)
+        // Campo opcional: si viene vacío, no se valida
         if (valor == null || valor.trim().isEmpty()) {
             return;
         }
-        
+
         String valorUpper = valor.toUpperCase();
-        
+
         if (!VALORES_PERMITIDOS.contains(valorUpper)) {
             throw new IllegalArgumentException(String.format(
-                "El campo %s debe tener uno de los siguientes valores: %s. Valor recibido: %s",
-                nombreCampo,
-                String.join(", ", VALORES_PERMITIDOS),
-                valor
+                    "El campo %s debe tener uno de los siguientes valores: %s. Valor recibido: %s",
+                    nombreCampo,
+                    String.join(", ", VALORES_PERMITIDOS),
+                    valor
             ));
         }
     }
