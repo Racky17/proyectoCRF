@@ -59,7 +59,6 @@ public class AntecedenteS {
     public Antecedente actualizar(Integer id, Antecedente cambios) {
         Antecedente db = porId(id);
         String destino = cambios.getCodPart() != null ? cambios.getCodPart() : db.getCodPart();
-        @SuppressWarnings("null")
         Participantecrf p = partRepo.findById(destino)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participante no encontrado"));
         String diag = cambios.getDiagnostico() != null ? cambios.getDiagnostico() : db.getDiagnostico();
