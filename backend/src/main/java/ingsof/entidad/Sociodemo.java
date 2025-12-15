@@ -1,7 +1,6 @@
 package ingsof.entidad;
 
 import jakarta.persistence.*;
-import org.antlr.v4.runtime.misc.NotNull;
 
 @Entity
 @Table(name = "sociodemo")

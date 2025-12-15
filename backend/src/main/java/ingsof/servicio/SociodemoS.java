@@ -1,6 +1,5 @@
 package ingsof.servicio;
 
-import ingsof.entidad.Participantecrf;
 import ingsof.entidad.Sociodemo;
 import ingsof.repositorio.SociodemoR;
 import org.springframework.stereotype.Service;
