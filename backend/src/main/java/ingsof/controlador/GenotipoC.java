@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 @CrossOrigin(origins = "http://localhost:3002")
 @RestController
 @RequestMapping("/api/genotipo")
@@ -15,7 +17,7 @@ public class GenotipoC {
     public GenotipoC(GenotipoS servicio) {
         this.servicio = servicio;
     }
-git
+
     @GetMapping
     public List<Genotipo> listar() {
         return this.servicio.listar();
@@ -53,7 +55,7 @@ git
         } catch (RuntimeException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(errorResponse);
         }
     }
 }
