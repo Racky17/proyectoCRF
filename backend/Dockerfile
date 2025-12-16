@@ -11,6 +11,11 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar ./app.jar
 
-EXPOSE 8082
+# Spring Boot por defecto escucha en 8080; docker-compose mapea 8080:8080
+EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Nota: si cambias la estructura de la BD en los scripts dentro de ./sql, Docker solo los ejecuta
+# la primera vez que se crea el contenedor de MySQL. Para re-aplicar los scripts de inicialización,
+# elimina el contenedor y el volumen de la DB antes de levantar con `docker-compose up --build`.
