@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda de Participantes - CRF</title>
+    <link rel="stylesheet" href="css/styleFormulario.css">
+    <link rel="stylesheet" href="css/styleBusqueda.css?v=3">
+</head>
+<body>
+    <div class="crf-wrap">
+        <div class="crf-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <button id="btnBackToHome" class="btn-back" type="button">← Volver al inicio</button>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span id="userInfo" style="color: #a4c8ff; font-weight: bold;"></span>
+                    <button id="btnLogout" class="btn-reset" type="button">Cerrar sesión</button>
+                </div>
+            </div>
+
+            <h1>Búsqueda de Participantes</h1>
+            <hr>
+
+            <!-- Sección de filtros -->
+            <div class="search-container">
+                <h3>🔍 Filtros de búsqueda</h3>
+
+                <div class="filter-grid">
+                    <div class="filter-item">
+                        <label for="filtroGrupo">Grupo:</label>
+                        <select id="filtroGrupo">
+                            <option value="">Todos</option>
+                            <option value="Caso">Caso</option>
+                            <option value="Control">Control</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label for="filtroNombre">Nombre:</label>
+                        <input type="text" id="filtroNombre" placeholder="Buscar por nombre..." />
+                    </div>
+
+                    <div class="filter-item">
+                        <label for="filtroFechaDesde">Fecha desde:</label>
+                        <input type="date" id="filtroFechaDesde" />
+                    </div>
+
+                    <div class="filter-item">
+                        <label for="filtroFechaHasta">Fecha hasta:</label>
+                        <input type="date" id="filtroFechaHasta" />
+                    </div>
+                </div>
+
+                <div class="btn-filter-group">
+                    <button id="btnBuscar" class="btn-filter" type="button">Buscar</button>
+                    <button id="btnLimpiar" class="btn-reset" type="button">Limpiar filtros</button>
+                </div>
+            </div>
+
+            <!-- Información de resultados -->
+            <div id="resultsInfo" class="results-info" style="display: none;">
+                Se encontraron <strong id="resultCount">0</strong> participante(s)
+            </div>
+
+            <!-- Tabla de resultados -->
+            <h3>Participantes registrados</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Grupo</th>
+                        <th>Fecha de inclusión</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaResultados">
+                    <tr><td colspan="5">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="js/busqueda.js"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+/* Estilos para la página de búsqueda de participantes */
+
+.btn-back {
+    background: #2d89ff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.btn-back:hover {
+    background: #1a6fd8;
+    filter: brightness(1.1);
+}
+
+.search-container {
+    background: #1a2028;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    border: 1px solid #3c4654;
+}
+
+.search-container h3 {
+    color: #a4c8ff;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 1200px) {
+    .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-item label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.filter-item select,
+.filter-item input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #11161c;
+    color: white;
+    box-sizing: border-box;
+}
+
+.btn-filter-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.btn-filter {
+    background: #2d89ff;
+    color: white;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.btn-filter:hover {
+    filter: brightness(1.1);
+}
+
+.btn-reset {
+    background: #666;
+    color: white;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.btn-reset:hover {
+    filter: brightness(1.1);
+}
+
+.results-info {
+    margin: 16px 0;
+    padding: 12px;
+    background: rgba(164, 200, 255, 0.1);
+    border-radius: 6px;
+    border-left: 4px solid #2d89ff;
+    font-size: 14px;
+}
+
+tbody tr {
+    transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+    background: rgba(45, 137, 255, 0.15) !important;
+    cursor: pointer;
+}
+
