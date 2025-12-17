@@ -124,13 +124,159 @@ function limpiarFiltros() {
     mostrarResultados(participantesFiltrados);
 }
 
+// Función auxiliar para obtener datos de una entidad
+async function obtenerDatosEntidad(entidad, codPart) {
+    try {
+        const resp = await fetch(`http://localhost:8080/api/${entidad}`);
+        if (!resp.ok) return null;
+
+        const lista = await resp.json();
+        if (Array.isArray(lista)) {
+            const filtrado = lista.filter(item => item.codPart === codPart);
+            return entidad === 'habito' ? filtrado : filtrado[0] || null;
+        }
+        return null;
+    } catch (e) {
+        console.error(`Error al cargar ${entidad}:`, e);
+        return null;
+    }
+}
+
+// Exportar a Excel con datos completos
+async function exportarAExcel() {
+    const btnExportar = document.getElementById('btnExportarExcel');
+
+    if (participantesFiltrados.length === 0) {
+        alert('No hay participantes para exportar.');
+        return;
+    }
+
+    try {
+        btnExportar.disabled = true;
+        btnExportar.textContent = '⏳ Generando Excel...';
+
+        const datosCompletos = [];
+
+        // Cargar datos completos de cada participante
+        for (const p of participantesFiltrados) {
+            const [sociodemo, antropometria, antecedente, factor, genotipo, habitos, helicobacter, histopatologia] =
+                await Promise.all([
+                    obtenerDatosEntidad('sociodemo', p.codPart),
+                    obtenerDatosEntidad('antropometria', p.codPart),
+                    obtenerDatosEntidad('antecedente', p.codPart),
+                    obtenerDatosEntidad('factor', p.codPart),
+                    obtenerDatosEntidad('genotipo', p.codPart),
+                    obtenerDatosEntidad('habito', p.codPart),
+                    obtenerDatosEntidad('helicobacter', p.codPart),
+                    obtenerDatosEntidad('histopatologia', p.codPart)
+                ]);
+
+            // Construir fila con todos los datos (EXCLUYENDO nombre y dirección)
+            const fila = {
+                // Identificación del participante
+                'Código': p.codPart || '',
+                'Grupo': p.grupo || '',
+                'Fecha Inclusión': (p.fechaInclusion || '').toString().slice(0, 10),
+
+                // Datos Sociodemográficos (SIN nombre ni dirección)
+                'Edad': sociodemo?.edad || '',
+                'Sexo': sociodemo?.sexo || '',
+                'Nacionalidad': sociodemo?.nacionalidad || '',
+                'Zona': sociodemo?.zona || '',
+                'Años Residencia': sociodemo?.aniosRes || '',
+                'Educación': sociodemo?.educacion || '',
+                'Ocupación': sociodemo?.ocupacion || '',
+
+                // Antropometría
+                'Peso (kg)': antropometria?.peso || '',
+                'Estatura (cm)': antropometria?.estatura || '',
+                'IMC': antropometria?.imc || '',
+
+                // Antecedentes
+                'Diagnóstico': antecedente?.diagnostico || '',
+                'Fecha Diagnóstico': antecedente?.fechaDiag ? antecedente.fechaDiag.toString().slice(0, 10) : '',
+                'Familiar CG': antecedente?.famCg || '',
+                'Familiar Otro Cáncer': antecedente?.famOtro || '',
+                'Otro Cáncer': antecedente?.otroCancer || '',
+                'Otras Enfermedades': antecedente?.otrasEnfermedades || '',
+                'Medicamentos': antecedente?.medicamentos || '',
+                'Cirugía': antecedente?.cirugia || '',
+
+                // Factores de Riesgo
+                'Consumo Carnes': factor?.carnes || '',
+                'Alimentos Salados': factor?.salados || '',
+                'Consumo Frutas': factor?.frutas || '',
+                'Frituras': factor?.frituras || '',
+                'Bebidas Calientes': factor?.bebidasCalientes || '',
+                'Pesticidas': factor?.pesticidas || '',
+                'Químicos': factor?.quimicos || '',
+                'Detalle Químicos': factor?.detalleQuimicos || '',
+                'Humo Leña': factor?.humoLena || '',
+                'Fuente Agua': factor?.fuenteAgua || '',
+                'Tratamiento Agua': factor?.tratamientoAgua || '',
+
+                // Genotipo
+                'Fecha Toma Muestra': genotipo?.fechaToma ? genotipo.fechaToma.toString().slice(0, 10) : '',
+                'TLR9 rs5743836': genotipo?.tlr9Rs5743836 || '',
+                'TLR9 rs187084': genotipo?.tlr9Rs187084 || '',
+                'miR146a rs2910164': genotipo?.mir146aRs2910164 || '',
+                'miR196a2 rs11614913': genotipo?.mir196a2Rs11614913 || '',
+                'MTHFR rs1801133': genotipo?.mthfrRs1801133 || '',
+                'DNMT3B rs1569686': genotipo?.dnmt3bRs1569686 || '',
+
+                // Hábitos (concatenar si hay varios)
+                'Hábitos': habitos && habitos.length > 0
+                    ? habitos.map((h, i) => `${i+1}. ${h.tipo}: ${h.estado} (${h.frecuencia || 'N/A'})`).join('; ')
+                    : '',
+
+                // Helicobacter
+                'H. Pylori Prueba': helicobacter?.prueba || '',
+                'H. Pylori Resultado': helicobacter?.resultado || '',
+                'H. Pylori Antigüedad': helicobacter?.antiguedad || '',
+
+                // Histopatología
+                'Histopatología Tipo': histopatologia?.tipo || '',
+                'Histopatología Localización': histopatologia?.localizacion || '',
+                'Histopatología Estadio': histopatologia?.estadio || ''
+            };
+
+            datosCompletos.push(fila);
+        }
+
+        // Crear libro de Excel
+        const ws = XLSX.utils.json_to_sheet(datosCompletos);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Participantes");
+
+        // Ajustar ancho de columnas
+        const colWidths = Object.keys(datosCompletos[0] || {}).map(key => ({
+            wch: Math.max(key.length, 15)
+        }));
+        ws['!cols'] = colWidths;
+
+        // Generar archivo y descargar
+        const fecha = new Date().toISOString().slice(0, 10);
+        XLSX.writeFile(wb, `Participantes_CRF_${fecha}.xlsx`);
+
+        btnExportar.disabled = false;
+        btnExportar.textContent = '📊 Exportar a Excel';
+
+    } catch (error) {
+        console.error('Error al exportar a Excel:', error);
+        alert('Error al generar el archivo Excel. Por favor, intenta nuevamente.');
+
+        btnExportar.disabled = false;
+        btnExportar.textContent = '📊 Exportar a Excel';
+    }
+}
+
 // Event listeners
 document.addEventListener("DOMContentLoaded", () => {
-    // Mostrar información del usuario
-    const userName = sessionStorage.getItem('userName') || 'Usuario';
-    const userInfo = document.getElementById('userInfo');
-    if (userInfo) {
-        userInfo.textContent = `👤 ${userName}`;
+    // Mostrar nombre del usuario en el navbar
+    const navbarUserName = document.getElementById("navbarUserName");
+    if (navbarUserName) {
+        const userName = sessionStorage.getItem('userName') || 'Usuario';
+        navbarUserName.textContent = `${userName}`;
     }
 
     // Cargar participantes al inicio
@@ -142,17 +288,20 @@ document.addEventListener("DOMContentLoaded", () => {
     // Botón de limpiar
     document.getElementById("btnLimpiar").addEventListener("click", limpiarFiltros);
 
-    // Volver al inicio
-    document.getElementById("btnBackToHome").addEventListener("click", () => {
-        window.location.href = "home.html";
-    });
-
     // Cerrar sesión
     const btnLogout = document.getElementById("btnLogout");
     if (btnLogout) {
         btnLogout.addEventListener("click", () => {
             sessionStorage.clear();
             window.location.href = "index.html";
+        });
+    }
+
+    // Exportar a Excel
+    const btnExportarExcel = document.getElementById("btnExportarExcel");
+    if (btnExportarExcel) {
+        btnExportarExcel.addEventListener("click", () => {
+            exportarAExcel();
         });
     }
 

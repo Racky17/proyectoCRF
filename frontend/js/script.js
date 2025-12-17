@@ -5,6 +5,7 @@
 
 const API = "http://localhost:8080/api/participantecrf";
 
+
 window.irAFormulario = function irAFormulario(){
   const home = document.getElementById("homeView");
   const form = document.getElementById("formView");
@@ -152,7 +153,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const userInfo = document.getElementById('userInfo');
   if (userInfo) {
     const userName = sessionStorage.getItem('userName') || 'Usuario';
-    userInfo.textContent = `👤 ${userName}`;
+    userInfo.textContent = `${userName}`;
+  }
+
+  // Mostrar nombre del usuario en el navbar de home.html
+  const navbarUserName = document.getElementById('navbarUserName');
+  if (navbarUserName) {
+    const userName = sessionStorage.getItem('userName') || 'Usuario';
+    navbarUserName.textContent = `${userName}`;
+  }
+
+  // Actualizar el título de bienvenida en home.html
+  const welcomeTitle = document.getElementById('welcomeTitle');
+  if (welcomeTitle) {
+    const userName = sessionStorage.getItem('userName') || 'Usuario';
+    welcomeTitle.innerHTML = `Bienvenido<br>${userName}`;
   }
 
   // Botón de cerrar sesión en home.html
@@ -173,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('formView')) {
     if (typeof listarParticipantes === 'function') listarParticipantes();
     const backForm = document.getElementById('btnBackForm');
-    if (backForm) backForm.addEventListener('click', () => { window.location.href = 'index.html'; });
+    if (backForm) backForm.addEventListener('click', () => { window.location.href = 'home.html'; });
   }
 
 
