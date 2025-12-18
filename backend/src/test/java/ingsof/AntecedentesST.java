@@ -1,4 +1,4 @@
-package test.java.ingsof;
+package ingsof;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ import ingsof.servicio.AntecedenteS;
 
 // @ExtendWith inicializa los Mocks sin necesidad de levantar todo Spring Boot (es muy rápido)
 @ExtendWith(MockitoExtension.class)
-class AntecedenteST {
+class AntecedentesST {
 
     @Mock
     private AntecedenteR repo;
