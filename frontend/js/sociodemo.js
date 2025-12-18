@@ -13,14 +13,29 @@ function leerRadio(name) {
   return el ? el.value : "";
 }
 
+function togglePrevisionOtra() {
+  const prevision = leerRadio("previsionSaludSocio");
+  const block = document.getElementById("previsionOtraBlock");
+  const input = document.getElementById("previsionOtraSocio");
+  if (!block) return;
+
+  const show = (prevision || "").toLowerCase() === "otra";
+  block.style.display = show ? "block" : "none";
+  if (!show && input) input.value = "";
+}
+
 function limpiarSociodemoForm() {
-  ["edadSocio","nacionalidadSocio","direccionSocio","ocupacionSocio"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = "";
-  });
-  ["sexoSocio","zonaSocio","aniosResSocio","educacionSocio"].forEach(n => {
+  ["edadSocio", "nacionalidadSocio", "direccionSocio", "comunaSocio", "ciudadSocio", "ocupacionSocio", "previsionOtraSocio"]
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
+
+  ["sexoSocio", "zonaSocio", "viveMas5Socio", "educacionSocio", "previsionSaludSocio"].forEach(n => {
     document.querySelectorAll(`input[name='${n}']`).forEach(r => r.checked = false);
   });
+
+  togglePrevisionOtra();
 }
 
 window.listarSociodemo = async function () {
@@ -90,14 +105,24 @@ async function guardarSociodemo() {
   const sexo = leerRadio("sexoSocio");
   const nacionalidad = (document.getElementById("nacionalidadSocio")?.value || "").trim();
   const direccion = (document.getElementById("direccionSocio")?.value || "").trim();
+  const comuna = (document.getElementById("comunaSocio")?.value || "").trim();
+  const ciudad = (document.getElementById("ciudadSocio")?.value || "").trim();
+
   const zona = leerRadio("zonaSocio");
-  const aniosRes = leerRadio("aniosResSocio");
+  const viveMas5 = leerRadio("viveMas5Socio");
   const educacion = leerRadio("educacionSocio");
   const ocupacion = (document.getElementById("ocupacionSocio")?.value || "").trim();
 
+  const previsionSalud = leerRadio("previsionSaludSocio");
+  const previsionOtra = (document.getElementById("previsionOtraSocio")?.value || "").trim();
+
   if (edad == null || Number.isNaN(edad)) { msgSocio("La edad es obligatoria.", "err"); return; }
-  if (!sexo || !zona || !aniosRes || !educacion) {
-    msgSocio("Completa: sexo, zona, años residencia y nivel educacional.", "err");
+  if (!sexo || !zona || !viveMas5 || !educacion || !previsionSalud) {
+    msgSocio("Completa: sexo, zona, >5 años, nivel educacional y previsión.", "err");
+    return;
+  }
+  if (previsionSalud.toLowerCase() === "otra" && !previsionOtra) {
+    msgSocio("Si seleccionas 'Otra', debes indicar cuál.", "err");
     return;
   }
 
@@ -107,7 +132,21 @@ async function guardarSociodemo() {
   try {
     const existente = await buscarSociodemoPorCodPart(codPart);
 
-    const payload = { edad, sexo, nacionalidad, direccion, zona, aniosRes, educacion, ocupacion, codPart };
+    const payload = {
+      edad,
+      sexo,
+      nacionalidad,
+      direccion,
+      comuna,
+      ciudad,
+      zona,
+      viveMas5,
+      educacion,
+      ocupacion,
+      previsionSalud,
+      previsionOtra: previsionSalud.toLowerCase() === "otra" ? previsionOtra : null,
+      codPart
+    };
 
     let url = API_SOCIO;
     let method = "POST";
@@ -148,5 +187,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnLimpiarSocio = document.getElementById("btnLimpiarSocio");
   if (btnLimpiarSocio) btnLimpiarSocio.addEventListener("click", () => limpiarSociodemoForm());
 
+  document.querySelectorAll("input[name='previsionSaludSocio']").forEach(r => {
+    r.addEventListener("change", togglePrevisionOtra);
+  });
+
+  togglePrevisionOtra();
   await window.listarSociodemo();
 });

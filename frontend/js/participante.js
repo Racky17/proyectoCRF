@@ -20,6 +20,11 @@ function setAutoCampos(data) {
   if (codEl) codEl.value = data?.codPart ?? "";
   const fechaStr = (data?.fechaInclusion || "").toString().slice(0, 10);
   if (fechaEl) fechaEl.value = fechaStr;
+
+  const telEl = document.getElementById("telefono");
+  const mailEl = document.getElementById("correo");
+  if (telEl) telEl.value = data?.telefono ?? telEl.value ?? "";
+  if (mailEl) mailEl.value = data?.correo ?? mailEl.value ?? "";
 }
 
 // CAMBIO 1 AQUII: actualizar todos los codPart de las secciones
@@ -29,15 +34,15 @@ function setCodSecciones(cod) {
   if (socio) socio.value = cod || "";
 
   // Sección 3
-  const antec = document.getElementById("codPartAntec");
-  if (antec) antec.value = cod || "";
+  const ant = document.getElementById("codPartAnte");
+  if (ant) ant.value = cod || "";
 
   // Sección 4
   const antrop = document.getElementById("codPartAntrop");
   if (antrop) antrop.value = cod || "";
 
-  // Sección 5-6 (Hábitos)
-  const hab = document.getElementById("codPartHabito");
+  // Sección 5
+  const hab = document.getElementById("codPartHab");
   if (hab) hab.value = cod || "";
 
   // Sección 7 (Factores)
@@ -51,7 +56,6 @@ function setCodSecciones(cod) {
   // Sección 9 (Histopatología)
   const histo = document.getElementById("codPartHisto");
   if (histo) histo.value = cod || "";
-
 }
 
 function limpiarAuto() {
@@ -63,25 +67,32 @@ function limpiarAuto() {
   window.estadoFormulario.codActual = null;
 }
 
+function guardarSiListo() {
+  const nombre = (document.getElementById("nombre")?.value || "").trim();
+  const grupo = getGrupoUI();
+  if (!nombre || !grupo) return;
+  guardarParticipanteAuto();
+}
+
 let guardando = false;
 
 async function listarParticipantes() {
   const tabla = document.getElementById("tablaParticipantes");
   if (!tabla) return;
 
-  tabla.innerHTML = `<tr><td colspan="4">Cargando...</td></tr>`;
+  tabla.innerHTML = `<tr><td colspan="6">Cargando...</td></tr>`;
 
   try {
     const resp = await fetch(API_PART);
     if (!resp.ok) {
       const txt = await resp.text();
-      tabla.innerHTML = `<tr><td colspan="4">Error: ${txt || resp.status}</td></tr>`;
+      tabla.innerHTML = `<tr><td colspan="6">Error: ${txt || resp.status}</td></tr>`;
       return;
     }
 
     const lista = await resp.json();
     if (!Array.isArray(lista) || lista.length === 0) {
-      tabla.innerHTML = `<tr><td colspan="4">Sin registros</td></tr>`;
+      tabla.innerHTML = `<tr><td colspan="6">Sin registros</td></tr>`;
       return;
     }
 
@@ -92,6 +103,8 @@ async function listarParticipantes() {
         <tr>
           <td>${p.codPart ?? ""}</td>
           <td>${p.nombre ?? ""}</td>
+          <td>${p.telefono ?? ""}</td>
+          <td>${p.correo ?? ""}</td>
           <td>${p.grupo ?? ""}</td>
           <td>${fechaStr}</td>
         </tr>
@@ -99,7 +112,7 @@ async function listarParticipantes() {
     });
   } catch (e) {
     console.error(e);
-    tabla.innerHTML = `<tr><td colspan="4">No se pudo cargar la lista</td></tr>`;
+    tabla.innerHTML = `<tr><td colspan="6">No se pudo cargar la lista</td></tr>`;
   }
 }
 
@@ -108,6 +121,8 @@ async function guardarParticipanteAuto() {
   if (!nombreEl) return;
 
   const nombre = (nombreEl.value || "").trim();
+  const telefono = (document.getElementById("telefono")?.value || "").trim();
+  const correo = (document.getElementById("correo")?.value || "").trim();
   const grupo = getGrupoUI();
 
   window.estadoFormulario.grupoActual = grupo || null;
@@ -138,17 +153,16 @@ async function guardarParticipanteAuto() {
     const resp = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre, grupo })
+      body: JSON.stringify({ nombre, telefono: telefono || null, correo: correo || null, grupo })
     });
 
     if (!resp.ok) {
       const txt = await resp.text();
-      msgPart("Error al guardar: " + (txt || resp.status), "err");
+      msgPart(txt || "Error guardando participante", "err");
       return;
     }
 
     const data = await resp.json();
-
     window.estadoFormulario.codActual = data.codPart || window.estadoFormulario.codActual;
 
     setAutoCampos(data);
@@ -167,7 +181,6 @@ async function guardarParticipanteAuto() {
     if (typeof window.listarHistopatologia === "function") await window.listarHistopatologia();
     if (typeof window.actualizarVisibilidadHistopatologia === "function") window.actualizarVisibilidadHistopatologia();
 
-
   } catch (e) {
     console.error(e);
     msgPart("No se pudo conectar al backend.", "err");
@@ -182,6 +195,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.querySelectorAll("input[name='grupo']").forEach(r => {
     r.addEventListener("change", guardarParticipanteAuto);
+  });
+
+  ["nombre", "telefono", "correo"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("blur", guardarSiListo);
   });
 
   window.estadoFormulario.grupoActual = getGrupoUI() || null;

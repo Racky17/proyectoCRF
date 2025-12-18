@@ -1,10 +1,6 @@
-// ===============================
-// factor.js
-// ===============================
 const API_FACTOR = "http://localhost:8082/api/factor";
 window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
 
-// ---------- Helpers ----------
 function msgFactor(texto, tipo = "ok") {
   const box = document.getElementById("msgBoxFactor");
   if (!box) return;
@@ -24,7 +20,7 @@ function limpiarRadios(name) {
 function setTablaMsg(html) {
   const tabla = document.getElementById("tablaFactor");
   if (!tabla) return;
-  tabla.innerHTML = `<tr><td colspan="12">${html}</td></tr>`;
+  tabla.innerHTML = `<tr><td colspan="13">${html}</td></tr>`;
 }
 
 function syncCodPartFactor() {
@@ -38,25 +34,20 @@ function syncCodPartFactor() {
   if (finalCod && codEl.value !== finalCod) codEl.value = finalCod;
 }
 
-// ---------- UI: visibilidad ----------
 window.actualizarVisibilidadFactor = function () {
-  // Químicos -> mostrar “¿Cuál(es)?” solo si Sí
   const quimicos = leerRadio("quimicosFac");
   const detBlock = document.getElementById("detalleQuimicosBlock");
   if (detBlock) detBlock.style.display = quimicos === "Sí" ? "block" : "none";
-
   if (quimicos !== "Sí") {
     const det = document.getElementById("detalleQuimicosFac");
     if (det) det.value = "";
   }
 
-  // Fuente de agua -> mostrar “Otra” solo si Otra
   const fuente = leerRadio("fuenteAguaFac");
   const otraBlock = document.getElementById("otraAguaBlock");
   if (otraBlock) otraBlock.style.display = fuente === "Otra" ? "block" : "none";
-
   if (fuente !== "Otra") {
-    const otra = document.getElementById("otraFuenteAguaFac");
+    const otra = document.getElementById("fuenteAguaOtraFac");
     if (otra) otra.value = "";
   }
 };
@@ -67,6 +58,7 @@ function limpiarFactorForm() {
     "saladosFac",
     "frutasFac",
     "friturasFac",
+    "condimentadosFac",
     "bebidasCalientesFac",
     "pesticidasFac",
     "quimicosFac",
@@ -78,13 +70,12 @@ function limpiarFactorForm() {
   const det = document.getElementById("detalleQuimicosFac");
   if (det) det.value = "";
 
-  const otra = document.getElementById("otraFuenteAguaFac");
+  const otra = document.getElementById("fuenteAguaOtraFac");
   if (otra) otra.value = "";
 
   window.actualizarVisibilidadFactor();
 }
 
-// ---------- API ----------
 window.listarFactor = async function () {
   const tabla = document.getElementById("tablaFactor");
   if (!tabla) return;
@@ -114,6 +105,11 @@ window.listarFactor = async function () {
           ? `Sí${f?.detalleQuimicos ? ": " + f.detalleQuimicos : ""}`
           : (f?.quimicos ?? "");
 
+      const aguaTxt =
+        (f?.fuenteAgua ?? "") === "Otra"
+          ? (f?.fuenteAguaOtra ? `Otra: ${f.fuenteAguaOtra}` : "Otra")
+          : (f?.fuenteAgua ?? "");
+
       tabla.innerHTML += `
         <tr>
           <td>${f?.idFac ?? ""}</td>
@@ -122,11 +118,12 @@ window.listarFactor = async function () {
           <td>${f?.salados ?? ""}</td>
           <td>${f?.frutas ?? ""}</td>
           <td>${f?.frituras ?? ""}</td>
+          <td>${f?.condimentados ?? ""}</td>
           <td>${f?.bebidasCalientes ?? ""}</td>
           <td>${f?.pesticidas ?? ""}</td>
           <td>${quimTxt}</td>
           <td>${f?.humoLena ?? ""}</td>
-          <td>${f?.fuenteAgua ?? ""}</td>
+          <td>${aguaTxt}</td>
           <td>${f?.tratamientoAgua ?? ""}</td>
         </tr>
       `;
@@ -166,11 +163,12 @@ async function guardarFactor() {
   const salados = leerRadio("saladosFac");
   const frutas = leerRadio("frutasFac");
   const frituras = leerRadio("friturasFac");
+  const condimentados = leerRadio("condimentadosFac");
   const bebidasCalientes = leerRadio("bebidasCalientesFac");
   const pesticidas = leerRadio("pesticidasFac");
   const quimicos = leerRadio("quimicosFac");
   const humoLena = leerRadio("humoLenaFac");
-  const fuenteAguaSel = leerRadio("fuenteAguaFac");
+  const fuenteAgua = leerRadio("fuenteAguaFac");
   const tratamientoAgua = leerRadio("tratamientoAguaFac");
 
   const detalleQuimicos =
@@ -178,14 +176,12 @@ async function guardarFactor() {
       ? ((document.getElementById("detalleQuimicosFac")?.value || "").trim() || null)
       : null;
 
-  const otraAguaTxt = (document.getElementById("otraFuenteAguaFac")?.value || "").trim();
-  const fuenteAgua =
-    fuenteAguaSel === "Otra"
-      ? (otraAguaTxt ? `Otra: ${otraAguaTxt}` : "")
-      : fuenteAguaSel;
+  const fuenteAguaOtra =
+    fuenteAgua === "Otra"
+      ? ((document.getElementById("fuenteAguaOtraFac")?.value || "").trim() || null)
+      : null;
 
-  // Validaciones (igual estilo que habito.js)
-  if (!carnes || !salados || !frutas || !frituras || !bebidasCalientes || !pesticidas || !quimicos || !humoLena || !fuenteAguaSel || !tratamientoAgua) {
+  if (!carnes || !salados || !frutas || !frituras || !condimentados || !bebidasCalientes || !pesticidas || !quimicos || !humoLena || !fuenteAgua || !tratamientoAgua) {
     msgFactor("Completa todos los campos obligatorios de la sección.", "err");
     return;
   }
@@ -193,7 +189,7 @@ async function guardarFactor() {
     msgFactor("Si Químicos = Sí, debes indicar ¿Cuál(es)?.", "err");
     return;
   }
-  if (fuenteAguaSel === "Otra" && !otraAguaTxt) {
+  if (fuenteAgua === "Otra" && !fuenteAguaOtra) {
     msgFactor("Si Fuente de agua = Otra, debes especificar cuál.", "err");
     return;
   }
@@ -211,12 +207,14 @@ async function guardarFactor() {
       salados,
       frutas,
       frituras,
+      condimentados,
       bebidasCalientes,
       pesticidas,
       quimicos,
       detalleQuimicos,
       humoLena,
       fuenteAgua,
+      fuenteAguaOtra,
       tratamientoAgua
     };
 
@@ -241,7 +239,6 @@ async function guardarFactor() {
       return;
     }
 
-    // IMPORTANTE: igual que en habito.js -> backend devuelve void, NO usar resp.json()
     msgFactor(method === "POST" ? "Factores guardados ✅" : "Factores actualizados ✅", "ok");
     await window.listarFactor();
   } catch (e) {
@@ -252,13 +249,10 @@ async function guardarFactor() {
   }
 }
 
-// ---------- Init ----------
 document.addEventListener("DOMContentLoaded", async () => {
-  // marca visual: si NO aparece, el JS no cargó
   const tabla = document.getElementById("tablaFactor");
-  if (tabla) tabla.innerHTML = `<tr><td colspan="12">JS factor cargado, consultando API...</td></tr>`;
+  if (tabla) tabla.innerHTML = `<tr><td colspan="13">JS factor cargado, consultando API...</td></tr>`;
 
-  // listeners visibilidad
   document.querySelectorAll("input[name='quimicosFac']").forEach(r =>
     r.addEventListener("change", window.actualizarVisibilidadFactor)
   );
@@ -266,14 +260,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     r.addEventListener("change", window.actualizarVisibilidadFactor)
   );
 
-  // botones
-  const btnGuardar = document.getElementById("btnGuardarFactor");
-  const btnLimpiar = document.getElementById("btnLimpiarFactor");
+  document.getElementById("btnGuardarFactor")?.addEventListener("click", guardarFactor);
+  document.getElementById("btnLimpiarFactor")?.addEventListener("click", limpiarFactorForm);
 
-  if (btnGuardar) btnGuardar.addEventListener("click", guardarFactor);
-  if (btnLimpiar) btnLimpiar.addEventListener("click", limpiarFactorForm);
-
-  // sync codPart constante (igual patrón)
   setInterval(syncCodPartFactor, 400);
 
   syncCodPartFactor();

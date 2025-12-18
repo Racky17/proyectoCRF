@@ -1,11 +1,5 @@
-// ===============================
-// antecedente.js
-// ===============================
 const API_ANTEC = "http://localhost:8082/api/antecedente";
 
-window.estadoFormulario = window.estadoFormulario || { codActual: null, grupoActual: null };
-
-// ---------- Helpers ----------
 function msgAntec(texto, tipo = "ok") {
   const box = document.getElementById("msgBoxAntec");
   if (!box) return;
@@ -18,23 +12,33 @@ function leerRadio(name) {
   return document.querySelector(`input[name='${name}']:checked`)?.value || "";
 }
 
+function getCodPartActual() {
+  return (
+    document.getElementById("codPart")?.value ||
+    window.estadoFormulario?.codActual ||
+    window.estadoFormulario?.cod_part ||
+    localStorage.getItem("codPart") ||
+    localStorage.getItem("cod_part") ||
+    ""
+  ).trim();
+}
+
+function syncCodPartAntec() {
+  const v = getCodPartActual();
+  const input = document.getElementById("codPartAntec");
+  if (input && v && input.value !== v) input.value = v;
+}
+
 function esCasoActual() {
-  const grupo =
-    window.estadoFormulario?.grupoActual ||
-    document.querySelector("input[name='grupo']:checked")?.value ||
-    "";
+  const grupo = document.querySelector("input[name='grupo']:checked")?.value || "";
   return String(grupo).toLowerCase() === "caso";
 }
 
-// ---------- UI: visibilidad ----------
 window.actualizarVisibilidadAntecedente = function () {
-  // Solo casos
   const solo = document.getElementById("soloCasosBlock");
   if (solo) {
     const caso = esCasoActual();
     solo.style.display = caso ? "block" : "none";
-
-    // Si es Control, limpiar y evitar que se envíe
     if (!caso) {
       document.querySelectorAll("input[name='diagnosticoAntec']").forEach(r => (r.checked = false));
       const fecha = document.getElementById("fechaDiagAntec");
@@ -42,14 +46,28 @@ window.actualizarVisibilidadAntecedente = function () {
     }
   }
 
-  // “¿Cuál(es)?” solo si famOtro = Sí
-  const cualBlock = document.getElementById("cualCancerBlock");
-  const famOtro = leerRadio("famOtroAntec");
-  if (cualBlock) cualBlock.style.display = famOtro === "Sí" ? "block" : "none";
+  const diag = leerRadio("diagnosticoAntec");
+  const fechaBlock = document.getElementById("fechaDiagBlock");
+  if (fechaBlock) fechaBlock.style.display = diag === "Sí" ? "block" : "none";
+  if (diag !== "Sí") {
+    const fecha = document.getElementById("fechaDiagAntec");
+    if (fecha) fecha.value = "";
+  }
 
+  const famOtro = leerRadio("famOtroAntec");
+  const cualBlock = document.getElementById("cualCancerBlock");
+  if (cualBlock) cualBlock.style.display = famOtro === "Sí" ? "block" : "none";
   if (famOtro !== "Sí") {
     const otro = document.getElementById("otroCancerAntec");
     if (otro) otro.value = "";
+  }
+
+  const medGastro = leerRadio("medGastroAntec");
+  const medBlock = document.getElementById("medGastroCualBlock");
+  if (medBlock) medBlock.style.display = medGastro === "Sí" ? "block" : "none";
+  if (medGastro !== "Sí") {
+    const cual = document.getElementById("medGastroCualAntec");
+    if (cual) cual.value = "";
   }
 };
 
@@ -58,11 +76,12 @@ function limpiarAntecedenteForm() {
   document.querySelectorAll("input[name='famCgAntec']").forEach(r => (r.checked = false));
   document.querySelectorAll("input[name='famOtroAntec']").forEach(r => (r.checked = false));
   document.querySelectorAll("input[name='cirugiaAntec']").forEach(r => (r.checked = false));
+  document.querySelectorAll("input[name='medGastroAntec']").forEach(r => (r.checked = false));
 
   const fecha = document.getElementById("fechaDiagAntec");
   if (fecha) fecha.value = "";
 
-  ["otroCancerAntec", "otrasEnfAntec", "medicamentosAntec"].forEach(id => {
+  ["otroCancerAntec", "otrasEnfAntec", "medGastroCualAntec"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = "";
   });
@@ -70,7 +89,6 @@ function limpiarAntecedenteForm() {
   window.actualizarVisibilidadAntecedente();
 }
 
-// ---------- API ----------
 window.listarAntecedente = async function () {
   const tabla = document.getElementById("tablaAntecedente");
   if (!tabla) return;
@@ -79,7 +97,6 @@ window.listarAntecedente = async function () {
 
   try {
     const resp = await fetch(API_ANTEC);
-
     if (!resp.ok) {
       const txt = await resp.text().catch(() => "");
       tabla.innerHTML = `<tr><td colspan="7">Error API (${resp.status}): ${txt || "sin detalle"}</td></tr>`;
@@ -87,7 +104,6 @@ window.listarAntecedente = async function () {
     }
 
     const lista = await resp.json().catch(() => null);
-
     if (!Array.isArray(lista) || lista.length === 0) {
       tabla.innerHTML = `<tr><td colspan="7">Sin registros</td></tr>`;
       return;
@@ -109,16 +125,17 @@ window.listarAntecedente = async function () {
       `;
     });
   } catch (e) {
-    console.error("Antecedente listar error:", e);
+    console.error(e);
     tabla.innerHTML = `<tr><td colspan="7">No se pudo conectar a ${API_ANTEC}</td></tr>`;
   }
 };
 
 async function buscarAntecedentePorCodPart(codPart) {
   try {
-    const resp = await fetch(`${API_ANTEC}/por-participante/${encodeURIComponent(codPart)}`);
-    if (!resp.ok) return null;
-    return await resp.json();
+    const resp2 = await fetch(API_ANTEC);
+    if (!resp2.ok) return null;
+    const lista = await resp2.json();
+    return Array.isArray(lista) ? (lista.find(x => x?.codPart === codPart) || null) : null;
   } catch {
     return null;
   }
@@ -127,7 +144,8 @@ async function buscarAntecedentePorCodPart(codPart) {
 let guardandoAntec = false;
 
 async function guardarAntecedente() {
-  const codPart = (document.getElementById("codPartAntec")?.value || "").trim();
+  syncCodPartAntec();
+  const codPart = getCodPartActual();
   if (!codPart) {
     msgAntec("Primero guarda el participante (código vacío).", "err");
     return;
@@ -147,15 +165,21 @@ async function guardarAntecedente() {
     famOtro === "Sí" ? ((document.getElementById("otroCancerAntec")?.value || "").trim() || null) : null;
 
   const otrasEnfermedades = (document.getElementById("otrasEnfAntec")?.value || "").trim() || null;
-  const medicamentos = (document.getElementById("medicamentosAntec")?.value || "").trim() || null;
 
-  // Validaciones
-  if (!famCg || !famOtro || !cirugia) {
-    msgAntec("Completa: Fam. cáncer gástrico, Fam. otros cánceres y Cirugía previa.", "err");
+  const medGastro = leerRadio("medGastroAntec");
+  const medGastroCual =
+    medGastro === "Sí" ? ((document.getElementById("medGastroCualAntec")?.value || "").trim() || null) : null;
+
+  if (!famCg || !famOtro || !cirugia || !medGastro) {
+    msgAntec("Completa: Fam. cáncer gástrico, Fam. otros cánceres, Medicamentos (Sí/No) y Cirugía previa.", "err");
     return;
   }
   if (famOtro === "Sí" && !otroCancer) {
     msgAntec("Si Fam. otros cánceres = Sí, debes indicar cuál(es).", "err");
+    return;
+  }
+  if (medGastro === "Sí" && !medGastroCual) {
+    msgAntec("Si medicamentos gastrolesivos = Sí, debes especificar cuál.", "err");
     return;
   }
   if (caso && !diagnostico) {
@@ -174,7 +198,6 @@ async function guardarAntecedente() {
     const existente = await buscarAntecedentePorCodPart(codPart);
 
     const payload = {
-      idAntec: existente?.idAntec ?? null,
       codPart,
       diagnostico,
       fechaDiag,
@@ -182,7 +205,8 @@ async function guardarAntecedente() {
       famOtro,
       otroCancer,
       otrasEnfermedades,
-      medicamentos,
+      medGastro,
+      medGastroCual,
       cirugia
     };
 
@@ -206,39 +230,30 @@ async function guardarAntecedente() {
       return;
     }
 
-    await resp.json().catch(() => null);
-
     msgAntec(method === "POST" ? "Antecedente guardado ✅" : "Antecedente actualizado ✅", "ok");
     await window.listarAntecedente();
   } catch (e) {
-    console.error("Antecedente guardar error:", e);
+    console.error(e);
     msgAntec("No se pudo conectar al backend de Antecedente.", "err");
   } finally {
     guardandoAntec = false;
   }
 }
 
-// ---------- Init ----------
 document.addEventListener("DOMContentLoaded", async () => {
-  const tabla = document.getElementById("tablaAntecedente");
-  if (tabla) {
-    // Si esto NO aparece, tu archivo no está cargando (ruta/nombre)
-    tabla.innerHTML = `<tr><td colspan="7">JS antecedente cargado, consultando API...</td></tr>`;
-  }
+  syncCodPartAntec();
 
-  const btnGuardar = document.getElementById("btnGuardarAntec");
-  const btnLimpiar = document.getElementById("btnLimpiarAntec");
+  document.getElementById("codPart")?.addEventListener("input", syncCodPartAntec);
+  document.getElementById("codPart")?.addEventListener("change", syncCodPartAntec);
+  document.getElementById("sec3")?.addEventListener("click", syncCodPartAntec);
 
-  if (btnGuardar) btnGuardar.addEventListener("click", guardarAntecedente);
-  if (btnLimpiar) btnLimpiar.addEventListener("click", limpiarAntecedenteForm);
+  document.getElementById("btnGuardarAntec")?.addEventListener("click", guardarAntecedente);
+  document.getElementById("btnLimpiarAntec")?.addEventListener("click", limpiarAntecedenteForm);
 
-  document.querySelectorAll("input[name='famOtroAntec']").forEach(r => {
-    r.addEventListener("change", window.actualizarVisibilidadAntecedente);
-  });
-
-  document.querySelectorAll("input[name='grupo']").forEach(r => {
-    r.addEventListener("change", window.actualizarVisibilidadAntecedente);
-  });
+  document.querySelectorAll("input[name='famOtroAntec']").forEach(r => r.addEventListener("change", window.actualizarVisibilidadAntecedente));
+  document.querySelectorAll("input[name='medGastroAntec']").forEach(r => r.addEventListener("change", window.actualizarVisibilidadAntecedente));
+  document.querySelectorAll("input[name='diagnosticoAntec']").forEach(r => r.addEventListener("change", window.actualizarVisibilidadAntecedente));
+  document.querySelectorAll("input[name='grupo']").forEach(r => r.addEventListener("change", window.actualizarVisibilidadAntecedente));
 
   window.actualizarVisibilidadAntecedente();
   await window.listarAntecedente();

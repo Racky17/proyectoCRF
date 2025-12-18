@@ -19,225 +19,274 @@
       <hr />
 
       <!-- ===================== SECCIÓN 1 ===================== -->
-      <section id="sec1" class="styleFormularioParticipante">
-        <h2>1. Identificación del participante</h2>
+<section id="sec1" class="styleFormularioParticipante">
+  <h2>1. Identificación del participante</h2>
 
-        <label for="nombre">Nombre completo:</label>
-        <input id="nombre" type="text" placeholder="Ej: María Ignacia" />
+  <label for="nombre">Nombre completo:</label>
+  <input id="nombre" type="text" placeholder="Ej: María Ignacia" />
 
-        <label>Grupo:</label>
-        <div class="radio-group">
-          <label class="radio-item">
-            <input type="radio" name="grupo" value="Caso" />
-            Caso
-          </label>
-          <label class="radio-item">
-            <input type="radio" name="grupo" value="Control" />
-            Control
-          </label>
-        </div>
+  <label for="telefono">Teléfono:</label>
+  <input id="telefono" type="tel" placeholder="Ej: +56971234567" />
 
-        <label for="codPart">Código (automático):</label>
-        <input id="codPart" type="text" readonly placeholder="Se generará al elegir Caso/Control" />
+  <label for="correo">Correo electrónico:</label>
+  <input id="correo" type="email" placeholder="Ej: correo@dominio.com" />
 
-        <label for="fechaAuto">Fecha de inclusión (automática):</label>
-        <input id="fechaAuto" type="text" readonly placeholder="Se asignará automáticamente" />
+  <label>Grupo:</label>
+  <div class="radio-group">
+    <label class="radio-item">
+      <input type="radio" name="grupo" value="Caso" />
+      Caso
+    </label>
+    <label class="radio-item">
+      <input type="radio" name="grupo" value="Control" />
+      Control
+    </label>
+  </div>
 
-        <div id="msgBox" class="msg"></div>
+  <label for="codPart">Código (automático):</label>
+  <input id="codPart" type="text" readonly placeholder="Se generará al guardar" />
 
-        <h3>Participantes registrados</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Grupo</th>
-              <th>Fecha inclusión</th>
-            </tr>
-          </thead>
-          <tbody id="tablaParticipantes">
-            <tr><td colspan="4">Cargando...</td></tr>
-          </tbody>
-        </table>
-      </section>
+  <label for="fechaAuto">Fecha de inclusión (automática):</label>
+  <input id="fechaAuto" type="text" readonly placeholder="Se asignará automáticamente" />
 
-      <!-- ===================== SECCIÓN 2 ===================== -->
+  <div id="msgBox" class="msg"></div>
+
+  <h3>Participantes registrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Grupo</th>
+        <th>Fecha inclusión</th>
+      </tr>
+    </thead>
+    <tbody id="tablaParticipantes">
+      <tr><td colspan="6">Cargando...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+ <!-- ===================== SECCIÓN 2 ===================== -->
       <section id="sec2" class="styleFormularioSociodemo">
-        <h2>2. Datos Sociodemográficos</h2>
+  <h2>2. Datos Sociodemográficos</h2>
 
-        <div class="form-grid">
-          <div class="grid-span">
-            <label for="codPartSocio">Código participante (automático):</label>
-            <input id="codPartSocio" type="text" readonly placeholder="Se asigna al guardar el participante" />
-          </div>
+  <div class="form-grid">
+    <div class="grid-span">
+      <label for="codPartSocio">Código participante (automático):</label>
+      <input id="codPartSocio" type="text" readonly placeholder="Se asigna al guardar el participante" />
+    </div>
 
-          <div>
-            <label for="edadSocio">Edad:</label>
-            <input id="edadSocio" type="number" min="0" placeholder="Ej: 25" />
-          </div>
+    <div>
+      <label for="edadSocio">Edad:</label>
+      <input id="edadSocio" type="number" min="0" placeholder="Ej: 25" />
+    </div>
 
-          <div>
-            <label>Sexo:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="sexoSocio" value="Hombre" /> Hombre</label>
-              <label class="radio-item"><input type="radio" name="sexoSocio" value="Mujer" /> Mujer</label>
-            </div>
-          </div>
+    <div>
+      <label>Sexo:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="sexoSocio" value="Hombre" /> Hombre</label>
+        <label class="radio-item"><input type="radio" name="sexoSocio" value="Mujer" /> Mujer</label>
+      </div>
+    </div>
 
-          <div>
-            <label for="nacionalidadSocio">Nacionalidad:</label>
-            <input id="nacionalidadSocio" type="text" placeholder="Ej: Chilena" />
-          </div>
+    <div>
+      <label for="nacionalidadSocio">Nacionalidad:</label>
+      <input id="nacionalidadSocio" type="text" placeholder="Ej: Chilena" />
+    </div>
 
-          <div>
-            <label for="direccionSocio">Dirección:</label>
-            <input id="direccionSocio" type="text" placeholder="Ej: Av. Siempre Viva 123" />
-          </div>
+    <div>
+      <label for="direccionSocio">Dirección:</label>
+      <input id="direccionSocio" type="text" placeholder="Ej: Av. Siempre Viva 123" />
+    </div>
 
-          <div>
-            <label>Zona:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="zonaSocio" value="Urbana" /> Urbana</label>
-              <label class="radio-item"><input type="radio" name="zonaSocio" value="Rural" /> Rural</label>
-            </div>
-          </div>
+    <div>
+      <label for="comunaSocio">Comuna:</label>
+      <input id="comunaSocio" type="text" placeholder="Ej: Providencia" />
+    </div>
 
-          <div>
-            <label>Años viviendo en la residencia actual:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="aniosResSocio" value="<5" /> &lt;5</label>
-              <label class="radio-item"><input type="radio" name="aniosResSocio" value="5-10" /> 5–10</label>
-              <label class="radio-item"><input type="radio" name="aniosResSocio" value=">10" /> &gt;10</label>
-            </div>
-          </div>
+    <div>
+      <label for="ciudadSocio">Ciudad:</label>
+      <input id="ciudadSocio" type="text" placeholder="Ej: Santiago" />
+    </div>
 
-          <div>
-            <label>Nivel educacional:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="educacionSocio" value="Básico" /> Básico</label>
-              <label class="radio-item"><input type="radio" name="educacionSocio" value="Medio" /> Medio</label>
-              <label class="radio-item"><input type="radio" name="educacionSocio" value="Superior" /> Superior</label>
-            </div>
-          </div>
+    <div class="grid-span">
+      <label>Zona:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="zonaSocio" value="Urbana" /> Urbana</label>
+        <label class="radio-item"><input type="radio" name="zonaSocio" value="Rural" /> Rural</label>
+      </div>
+    </div>
 
-          <div class="grid-span">
-            <label for="ocupacionSocio">Ocupación actual:</label>
-            <input id="ocupacionSocio" type="text" placeholder="Ej: Estudiante / Trabajador/a" />
-          </div>
-        </div>
+    <div class="grid-span">
+      <label>¿Vive usted en esta zona desde hace más de 5 años?</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="viveMas5Socio" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="viveMas5Socio" value="No" /> No</label>
+      </div>
+    </div>
 
-        <div class="btn-row">
-          <button id="btnGuardarSocio" class="btn-primary" type="button">Guardar Sociodemo</button>
-          <button id="btnLimpiarSocio" class="btn-back" type="button">Limpiar</button>
-        </div>
+    <div class="grid-span">
+      <label>Nivel educacional:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="educacionSocio" value="Básico" /> Básico</label>
+        <label class="radio-item"><input type="radio" name="educacionSocio" value="Medio" /> Medio</label>
+        <label class="radio-item"><input type="radio" name="educacionSocio" value="Superior" /> Superior</label>
+      </div>
+    </div>
 
-        <div id="msgBoxSocio" class="msg"></div>
+    <div class="grid-span">
+      <label for="ocupacionSocio">Ocupación actual:</label>
+      <input id="ocupacionSocio" type="text" placeholder="Ej: Estudiante / Trabajador/a" />
+    </div>
 
-        <h3>Sociodemo registrados</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Código</th>
-              <th>Edad</th>
-              <th>Sexo</th>
-              <th>Zona</th>
-              <th>Educación</th>
-              <th>Ocupación</th>
-            </tr>
-          </thead>
-          <tbody id="tablaSociodemo">
-            <tr><td colspan="7">Cargando...</td></tr>
-          </tbody>
-        </table>
-      </section>
+    <div class="grid-span">
+      <label>Previsión de salud actual:</label>
+      <div class="radio-group radio-col">
+        <label class="radio-item"><input type="radio" name="previsionSaludSocio" value="Fonasa" /> Fonasa</label>
+        <label class="radio-item"><input type="radio" name="previsionSaludSocio" value="Isapre" /> Isapre</label>
+        <label class="radio-item"><input type="radio" name="previsionSaludSocio" value="Capredena / Dipreca" /> Capredena / Dipreca</label>
+        <label class="radio-item"><input type="radio" name="previsionSaludSocio" value="Sin previsión" /> Sin previsión</label>
+        <label class="radio-item"><input type="radio" name="previsionSaludSocio" value="Otra" /> Otra:</label>
+      </div>
+
+      <div id="previsionOtraBlock" class="grid-span" style="display:none;">
+        <label for="previsionOtraSocio">¿Cuál?</label>
+        <input id="previsionOtraSocio" type="text" placeholder="Especifica cuál" />
+        <hr />
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="btnGuardarSocio" class="btn-primary" type="button">Guardar Sociodemo</button>
+    <button id="btnLimpiarSocio" class="btn-back" type="button">Limpiar</button>
+  </div>
+
+  <div id="msgBoxSocio" class="msg"></div>
+
+  <h3>Sociodemo registrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Código</th>
+        <th>Edad</th>
+        <th>Sexo</th>
+        <th>Zona</th>
+        <th>Educación</th>
+        <th>Ocupación</th>
+      </tr>
+    </thead>
+    <tbody id="tablaSociodemo">
+      <tr><td colspan="7">Cargando...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
 
       <!-- ===================== SECCIÓN 3 ===================== -->
-      <section id="sec3" class="styleFormularioAntecedente">
-        <h2>3. Antecedentes clínicos</h2>
+     <section id="sec3" class="styleFormularioAntecedente">
+  <h2>3. Antecedentes clínicos</h2>
 
-        <div class="form-grid">
-          <div class="grid-span">
-            <label for="codPartAntec">Código participante (automático):</label>
-            <input id="codPartAntec" type="text" readonly placeholder="Se asigna al guardar el participante" />
-          </div>
+  <div class="form-grid">
+    <div class="grid-span">
+      <label for="codPartAntec">Código participante (automático):</label>
+      <input id="codPartAntec" type="text" readonly placeholder="Se asigna al guardar el participante" />
+    </div>
 
-          <div id="soloCasosBlock" class="grid-span">
-            <label>Diagnóstico histológico de adenocarcinoma gástrico (solo casos):</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="diagnosticoAntec" value="Sí" /> Sí</label>
-              <label class="radio-item"><input type="radio" name="diagnosticoAntec" value="No" /> No</label>
-            </div>
+    <!-- Solo casos -->
+    <div id="soloCasosBlock" class="grid-span">
+      <label>Diagnóstico histológico de adenocarcinoma gástrico (solo casos):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="diagnosticoAntec" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="diagnosticoAntec" value="No" /> No</label>
+      </div>
 
-            <label for="fechaDiagAntec">Fecha de diagnóstico (solo casos):</label>
-            <input id="fechaDiagAntec" type="date" />
-          </div>
+      <div id="fechaDiagBlock" class="grid-span" style="display:none;">
+        <label for="fechaDiagAntec">Fecha de diagnóstico (solo casos):</label>
+        <input id="fechaDiagAntec" type="date" />
+      </div>
+    </div>
 
-          <div>
-            <label>Antecedentes familiares de cáncer gástrico:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="famCgAntec" value="Sí" /> Sí</label>
-              <label class="radio-item"><input type="radio" name="famCgAntec" value="No" /> No</label>
-            </div>
-          </div>
+    <div class="grid-span">
+      <label>Antecedentes familiares de cáncer gástrico:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="famCgAntec" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="famCgAntec" value="No" /> No</label>
+      </div>
+    </div>
 
-          <div>
-            <label>Antecedentes familiares de otros tipos de cáncer:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="famOtroAntec" value="Sí" /> Sí</label>
-              <label class="radio-item"><input type="radio" name="famOtroAntec" value="No" /> No</label>
-            </div>
+    <div class="grid-span">
+      <label>Antecedentes familiares de otros tipos de cáncer:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="famOtroAntec" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="famOtroAntec" value="No" /> No</label>
+      </div>
 
-            <div id="cualCancerBlock">
-              <label for="otroCancerAntec">¿Cuál(es)?:</label>
-              <input id="otroCancerAntec" type="text" placeholder="Ej: Colon, mama..." />
-            </div>
-          </div>
+      <div id="cualCancerBlock" class="grid-span" style="display:none;">
+        <label for="otroCancerAntec">¿Cuál(es)?</label>
+        <input id="otroCancerAntec" type="text" />
+      </div>
+    </div>
 
-          <div>
-            <label for="otrasEnfAntec">Otras enfermedades relevantes:</label>
-            <input id="otrasEnfAntec" type="text" placeholder="Ej: gastritis crónica, úlcera..." />
-          </div>
+    <div class="grid-span">
+      <label for="otrasEnfAntec">Otras enfermedades relevantes (ej. gastritis crónica, úlcera péptica, anemia):</label>
+      <input id="otrasEnfAntec" type="text" />
+    </div>
 
-          <div>
-            <label for="medicamentosAntec">Uso crónico de medicamentos:</label>
-            <input id="medicamentosAntec" type="text" placeholder="Ej: AINEs, IBP..." />
-          </div>
+    <div class="grid-span">
+      <label>Uso crónico de medicamentos gastrolesivos (AINES u otros):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="medGastroAntec" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="medGastroAntec" value="No" /> No</label>
+      </div>
 
-          <div>
-            <label>Cirugía gástrica previa (gastrectomía parcial):</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="cirugiaAntec" value="Sí" /> Sí</label>
-              <label class="radio-item"><input type="radio" name="cirugiaAntec" value="No" /> No</label>
-            </div>
-          </div>
-        </div>
+      <div id="medGastroCualBlock" class="grid-span" style="display:none;">
+        <label for="medGastroCualAntec">Especificar cuál</label>
+        <input id="medGastroCualAntec" type="text" />
+        <hr />
+      </div>
+    </div>
 
-        <div class="btn-row">
-          <button id="btnGuardarAntec" class="btn-primary" type="button">Guardar Antecedente</button>
-          <button id="btnLimpiarAntec" class="btn-back" type="button">Limpiar</button>
-        </div>
+    <div class="grid-span">
+      <label>Cirugía gástrica previa (gastrectomía parcial):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="cirugiaAntec" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="cirugiaAntec" value="No" /> No</label>
+      </div>
+    </div>
+  </div>
 
-        <div id="msgBoxAntec" class="msg"></div>
+  <div class="btn-row">
+    <button id="btnGuardarAntec" class="btn-primary" type="button">Guardar Antecedente</button>
+    <button id="btnLimpiarAntec" class="btn-back" type="button">Limpiar</button>
+  </div>
 
-        <h3>Antecedentes registrados</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Código</th>
-              <th>Diag (solo caso)</th>
-              <th>Fecha diag</th>
-              <th>Fam CG</th>
-              <th>Fam otro</th>
-              <th>Cirugía</th>
-            </tr>
-          </thead>
-          <tbody id="tablaAntecedente">
-            <tr><td colspan="7">Cargando...</td></tr>
-          </tbody>
-        </table>
-      </section>
+  <div id="msgBoxAntec" class="msg"></div>
+
+  <h3>Antecedentes registrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Código</th>
+        <th>Diagnóstico</th>
+        <th>Fecha</th>
+        <th>Fam CG</th>
+        <th>Fam otro</th>
+        <th>Cirugía</th>
+      </tr>
+    </thead>
+    <tbody id="tablaAntecedente">
+      <tr><td colspan="7">Cargando...</td></tr>
+    </tbody>
+  </table>
+</section>
+
 
       <!-- ===================== SECCIÓN 4 ===================== -->
       <section id="sec4" class="styleFormularioAntropometria">
@@ -425,144 +474,158 @@
       </section>
 
       <!-- ===================== SECCIÓN 7 ===================== -->
-      <section id="sec7" class="styleFormularioFactor">
-        <h2>7. Factores dietarios y ambientales</h2>
+     <section id="sec7" class="styleFormularioFactor">
+  <h2>7. Factores dietarios y ambientales</h2>
 
-        <div class="form-grid">
-          <div class="grid-span">
-            <label for="codPartFactor">Código participante (automático):</label>
-            <input id="codPartFactor" type="text" readonly placeholder="Se asigna al guardar el participante" />
-          </div>
+  <div class="form-grid">
+    <div class="grid-span">
+      <label for="codPartFactor">Código participante (automático):</label>
+      <input id="codPartFactor" type="text" readonly placeholder="Se asigna al guardar el participante" />
+    </div>
 
-          <div class="grid-span">
-            <label>Carnes procesadas/cecinas:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="carnesFac" value="<1/sem" /> &lt;1/sem</label>
-              <label class="radio-item"><input type="radio" name="carnesFac" value="1-2/sem" /> 1–2/sem</label>
-              <label class="radio-item"><input type="radio" name="carnesFac" value=">=3/sem" /> ≥3/sem</label>
-            </div>
-          </div>
+    <div class="grid-span">
+      <label>Consumo de carnes procesadas/cecinas:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="carnesFac" value="≤1/sem" /> ≤1/sem</label>
+        <label class="radio-item"><input type="radio" name="carnesFac" value="2/sem" /> 2/sem</label>
+        <label class="radio-item"><input type="radio" name="carnesFac" value="≥3/sem" /> ≥3/sem</label>
+      </div>
+    </div>
 
-          <div class="grid-span">
-            <label>Alimentos muy salados (agrega sal a la comida sin probar):</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="saladosFac" value="Sí" /> Sí</label>
-              <label class="radio-item"><input type="radio" name="saladosFac" value="No" /> No</label>
-            </div>
-          </div>
+    <div class="grid-span">
+      <label>Consumo de alimentos muy salados (agrega sal a la comida sin probar):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="saladosFac" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="saladosFac" value="No" /> No</label>
+      </div>
+    </div>
 
-          <div class="grid-span">
-            <label>Porciones de frutas y verduras frescas:</label>
-            <div class="radio-group radio-col">
-              <label class="radio-item"><input type="radio" name="frutasFac" value=">=5 porciones/día" /> ≥5 porciones/día (adecuado/protector)</label>
-              <label class="radio-item"><input type="radio" name="frutasFac" value="3-4 porciones/día" /> 3–4 porciones/día (intermedio)</label>
-              <label class="radio-item"><input type="radio" name="frutasFac" value="<=2 porciones/día" /> ≤2 porciones/día (bajo/insuficiente, riesgo)</label>
-            </div>
-          </div>
+    <div class="grid-span">
+      <label>
+        Consumo de porciones de frutas y verduras frescas
+        <em>(1 porción = 1 fruta pequeña, ½ taza de fruta picada, 1 taza de verduras de hoja cruda o ½ taza de verduras cocidas ≈ 80 g)</em>
+      </label>
+      <div class="radio-group radio-col">
+        <label class="radio-item"><input type="radio" name="frutasFac" value="≥5 porciones/día" /> ≥5 porciones/día (adecuado/protector)</label>
+        <label class="radio-item"><input type="radio" name="frutasFac" value="3–4 porciones/día" /> 3–4 porciones/día (intermedio)</label>
+        <label class="radio-item"><input type="radio" name="frutasFac" value="≤2 porciones/día" /> ≤2 porciones/día (bajo/insuficiente, riesgo)</label>
+      </div>
+    </div>
 
-          <div class="grid-span">
-            <label>Consumo frecuente de frituras (≥3 veces por semana):</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="friturasFac" value="Sí" /> Sí</label>
-              <label class="radio-item"><input type="radio" name="friturasFac" value="No" /> No</label>
-            </div>
-          </div>
+    <div class="grid-span">
+      <label>Consumo frecuente de frituras (≥3 veces por semana):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="friturasFac" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="friturasFac" value="No" /> No</label>
+      </div>
+    </div>
 
-          <div class="grid-span">
-            <label>Infusiones o bebidas muy calientes (tomadas sin dejar entibiar):</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="bebidasCalientesFac" value="Nunca/Rara vez" /> Nunca/Rara vez</label>
-              <label class="radio-item"><input type="radio" name="bebidasCalientesFac" value="1-2/sem" /> 1–2/sem</label>
-              <label class="radio-item"><input type="radio" name="bebidasCalientesFac" value=">=3/sem" /> ≥3/sem</label>
-            </div>
-          </div>
+    <div class="grid-span">
+      <label>Consumo de alimentos muy condimentados (ají, salsas picantes, etc.)</label>
+      <div class="radio-group radio-col">
+        <label class="radio-item"><input type="radio" name="condimentadosFac" value="Casi nunca / Rara vez" /> Casi nunca / Rara vez</label>
+        <label class="radio-item"><input type="radio" name="condimentadosFac" value="1 a 2 veces por semana" /> 1 a 2 veces por semana</label>
+        <label class="radio-item"><input type="radio" name="condimentadosFac" value="3 o más veces por semana" /> 3 o más veces por semana</label>
+      </div>
+    </div>
 
-          <div class="grid-span">
-            <label>Exposición ocupacional a pesticidas:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="pesticidasFac" value="Sí" /> Sí</label>
-              <label class="radio-item"><input type="radio" name="pesticidasFac" value="No" /> No</label>
-            </div>
-          </div>
+    <div class="grid-span">
+      <label>Consumo de infusiones o bebidas muy calientes (tomadas sin dejar entibiar):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="bebidasCalientesFac" value="Nunca/Rara vez" /> Nunca/Rara vez</label>
+        <label class="radio-item"><input type="radio" name="bebidasCalientesFac" value="1–2/sem" /> 1–2/sem</label>
+        <label class="radio-item"><input type="radio" name="bebidasCalientesFac" value="≥3/sem" /> ≥3/sem</label>
+      </div>
+    </div>
 
-          <div class="grid-span">
-            <label>Exposición a otros compuestos químicos:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="quimicosFac" value="Sí" /> Sí</label>
-              <label class="radio-item"><input type="radio" name="quimicosFac" value="No" /> No</label>
-            </div>
+    <div class="grid-span">
+      <label>Exposición ocupacional a pesticidas:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="pesticidasFac" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="pesticidasFac" value="No" /> No</label>
+      </div>
+    </div>
 
-            <div id="detalleQuimicosBlock" class="grid-span">
-              <label for="detalleQuimicosFac">¿Cuál(es)?</label>
-              <input id="detalleQuimicosFac" type="text" placeholder="Ej: solventes, metales, etc." />
-            </div>
-          </div>
+    <div class="grid-span">
+      <label>Exposición a otros compuestos químicos:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="quimicosFac" value="Sí" /> Sí</label>
+        <label class="radio-item"><input type="radio" name="quimicosFac" value="No" /> No</label>
+      </div>
 
-          <div class="grid-span">
-            <label>Humo de leña en el hogar (cocina/calefacción):</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="humoLenaFac" value="Nunca/Rara vez" /> Nunca/Rara vez</label>
-              <label class="radio-item"><input type="radio" name="humoLenaFac" value="Estacional" /> Estacional</label>
-              <label class="radio-item"><input type="radio" name="humoLenaFac" value="Diario" /> Diario</label>
-            </div>
-          </div>
+      <div id="detalleQuimicosBlock" class="grid-span" style="display:none;">
+        <label for="detalleQuimicosFac">¿Cuál(es)?</label>
+        <input id="detalleQuimicosFac" type="text" />
+      </div>
+    </div>
 
-          <div class="grid-span">
-            <label>Fuente principal de agua en el hogar:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Red pública" /> Red pública</label>
-              <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Pozo" /> Pozo</label>
-              <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Camión aljibe" /> Camión aljibe</label>
-              <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Otra" /> Otra</label>
-            </div>
+    <div class="grid-span">
+      <label>Humo de leña en el hogar (cocina/calefacción):</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="humoLenaFac" value="Nunca/Rara vez" /> Nunca/Rara vez</label>
+        <label class="radio-item"><input type="radio" name="humoLenaFac" value="Estacional" /> Estacional</label>
+        <label class="radio-item"><input type="radio" name="humoLenaFac" value="Diario" /> Diario</label>
+      </div>
+    </div>
 
-            <div id="otraAguaBlock" class="grid-span">
-              <label for="otraFuenteAguaFac">Especifica otra:</label>
-              <input id="otraFuenteAguaFac" type="text" placeholder="Ej: vertiente, río, etc." />
-            </div>
-          </div>
+    <div class="grid-span">
+      <label>Fuente principal de agua en el hogar:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Red pública" /> Red pública</label>
+        <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Pozo" /> Pozo</label>
+        <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Camión aljibe" /> Camión aljibe</label>
+        <label class="radio-item"><input type="radio" name="fuenteAguaFac" value="Otra" /> Otra:</label>
+      </div>
 
-          <div class="grid-span">
-            <label>Tratamiento del agua en casa:</label>
-            <div class="radio-group">
-              <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Ninguno" /> Ninguno</label>
-              <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Hervir" /> Hervir</label>
-              <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Filtro" /> Filtro</label>
-              <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Cloro" /> Cloro</label>
-            </div>
-          </div>
-        </div>
+      <div id="otraAguaBlock" class="grid-span" style="display:none;">
+        <input id="fuenteAguaOtraFac" type="text" placeholder="Especificar" />
+        <hr />
+      </div>
+    </div>
 
-        <div class="btn-row">
-          <button id="btnGuardarFactor" class="btn-primary" type="button">Guardar Factores</button>
-          <button id="btnLimpiarFactor" class="btn-back" type="button">Limpiar</button>
-        </div>
+    <div class="grid-span">
+      <label>Tratamiento del agua en casa:</label>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Ninguno" /> Ninguno</label>
+        <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Hervir" /> Hervir</label>
+        <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Filtro" /> Filtro</label>
+        <label class="radio-item"><input type="radio" name="tratamientoAguaFac" value="Cloro" /> Cloro</label>
+      </div>
+    </div>
+  </div>
 
-        <div id="msgBoxFactor" class="msg"></div>
+  <div class="btn-row">
+    <button id="btnGuardarFactor" class="btn-primary" type="button">Guardar Factores</button>
+    <button id="btnLimpiarFactor" class="btn-back" type="button">Limpiar</button>
+  </div>
 
-        <h3>Factores registrados</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Código</th>
-              <th>Carnes</th>
-              <th>Salados</th>
-              <th>Frutas/Verduras</th>
-              <th>Frituras</th>
-              <th>Bebidas calientes</th>
-              <th>Pesticidas</th>
-              <th>Químicos</th>
-              <th>Humo leña</th>
-              <th>Fuente agua</th>
-              <th>Tratamiento agua</th>
-            </tr>
-          </thead>
-          <tbody id="tablaFactor">
-            <tr><td colspan="12">Cargando...</td></tr>
-          </tbody>
-        </table>
-      </section>
+  <div id="msgBoxFactor" class="msg"></div>
+
+  <h3>Factores registrados</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Código</th>
+        <th>Carnes</th>
+        <th>Salados</th>
+        <th>Frutas</th>
+        <th>Frituras</th>
+        <th>Condimentados</th>
+        <th>Bebidas</th>
+        <th>Pesticidas</th>
+        <th>Químicos</th>
+        <th>Humo leña</th>
+        <th>Fuente agua</th>
+        <th>Tratamiento</th>
+      </tr>
+    </thead>
+    <tbody id="tablaFactor">
+      <tr><td colspan="13">Cargando...</td></tr>
+    </tbody>
+  </table>
+</section>
+
 
 
 
